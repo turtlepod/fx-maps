@@ -2,6 +2,37 @@
  * CSS Style
 **/
 
-
+/* Google Maps
+------------------------------------------ */
+#gmaps-search{
+	position: relative;
+}
+#get-loc{
+	position: absolute;
+	top: 4px;
+	right: 5px;
+	background: url( 'current-location.png' );
+	background-size: 100%;
+	background-position: center;
+	width: 20px;
+	height: 20px;
+	display: block;
+	opacity: 0.8;
+}
+#get-loc:hover,
+#get-loc:active{
+	opacity: 1;
+}
+#get-loc span{
+	position: absolute;
+	left: -9999em;
+	top: -9999em;
+}
+@media screen and (max-width: 768px){
+	#get-loc{
+		width: 28px;
+		height: 28px;
+	}
+}
 
 

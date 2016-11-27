@@ -158,7 +158,7 @@ class Settings{
 				$gmaps_lat     = Functions::get_option( 'gmaps_lat' );
 				$gmaps_lng     = Functions::get_option( 'gmaps_address' );
 				?>
-					<p>
+					<p id="gmaps-search">
 						<input autocomplete="off" placeholder="<?php echo sanitize_text_field( __( 'Search Google Maps...', 'fx-maps' ) ); ?>" id="fx-maps-gmaps_address" name="fx-maps[gmaps_address]" type="search" class="widefat" value="<?php echo sanitize_text_field( $gmaps_address ); ?>">
 						<a id="get-loc" title="<?php esc_attr_e( 'Get your current location', 'fx-maps' ); ?>" href="#"><span><?php _e( 'Get your current location', 'fx-maps' ); ?></span></a>
 					</p>
@@ -281,6 +281,7 @@ class Settings{
 			$callback   = function(){
 				?>
 				<p>Use this shortcode to display map and address.</p>
+				<p><input id="fx-maps-shortcode" class="widefat" type="text" readonly="readonly" value="[fx-maps]"></p>
 				<?php
 			},
 			$screen     = $this->hook_suffix,
