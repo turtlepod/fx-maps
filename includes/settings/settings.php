@@ -81,7 +81,6 @@ class Settings{
 				<div id="post-body" class="metabox-holder columns-<?php echo 1 == get_current_screen()->get_columns() ? '1' : '2'; ?>">
 					<form method="post" action="options.php">
 						<div id="postbox-container-2" class="postbox-container">
-							<?php settings_errors(); ?>
 							<?php do_settings_sections( $this->settings_slug ); ?>
 							<?php settings_fields( $this->options_group ); ?>
 							<?php submit_button(); ?>
