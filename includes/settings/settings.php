@@ -108,7 +108,25 @@ class Settings{
 		register_setting(
 			$option_group      = $this->options_group,
 			$option_name       = $this->option_name,
-			$sanitize_callback = array( $this, 'sanitize' )
+			$sanitize_callback = function( $data ){
+				$new_data = array();
+				if( isset( $data['gmaps_address'] ) ){
+					$new_data['gmaps_address'] = strip_tags( $data['gmaps_address'] );
+				}
+				if( isset( $data['gmaps_api_key'] ) ){
+					$new_data['gmaps_api_key'] = strip_tags( $data['gmaps_api_key'] );
+				}
+				if( isset( $data['gmaps_lat'] ) ){
+					$new_data['gmaps_lat'] = strip_tags( $data['gmaps_lat'] );
+				}
+				if( isset( $data['gmaps_lng'] ) ){
+					$new_data['gmaps_lng'] = strip_tags( $data['gmaps_lng'] );
+				}
+				if( isset( $data['display_address'] ) ){
+					$new_data['display_address'] = wp_kses_post( $data['display_address'] );
+				}
+				return $new_data;
+			}
 		);
 
 		/* Create settings section */
@@ -117,21 +135,6 @@ class Settings{
 			$section_title     = '',
 			$callback_function = '__return_false',
 			$settings_slug     = $this->settings_slug
-		);
-
-		/* Create setting field: Address */
-		add_settings_field(
-			$field_id          = 'fx_maps_address',
-			$field_title       = '<label for="fx-maps-address">' . __( 'Location Address', 'fx-maps' ) . '</label>',
-			$callback_function = function(){
-				$address = Functions::get_option( 'address' );
-				?>
-					<textarea autocomplete="off" id="fx-maps-address" class="widefat" name="fx-maps[address]"><?php echo esc_textarea( $address ); ?></textarea>
-					<p class="description"><?php _e( 'Your location address.', 'fx-maps' ); ?></p>
-				<?php
-			},
-			$settings_slug     = $this->settings_slug,
-			$section_id        = 'fx_maps_section'
 		);
 
 		/* Create setting field: Google Maps API */
@@ -172,31 +175,21 @@ class Settings{
 			$section_id        = 'fx_maps_section'
 		);
 
-	}
+		/* Create setting field: Address */
+		add_settings_field(
+			$field_id          = 'fx_maps_display_address',
+			$field_title       = '<label for="fx-maps-address">' . __( 'Display Address', 'fx-maps' ) . '</label>',
+			$callback_function = function(){
+				$display_address = Functions::get_option( 'display_address' );
+				?>
+					<textarea autocomplete="off" id="fx-maps-address" class="widefat" name="fx-maps[display_address]"><?php echo esc_textarea( $display_address ); ?></textarea>
+					<p class="description"><?php _e( 'Your location address.', 'fx-maps' ); ?></p>
+				<?php
+			},
+			$settings_slug     = $this->settings_slug,
+			$section_id        = 'fx_maps_section'
+		);
 
-
-	/**
-	 * Sanitize Options
-	 * @since 1.0.0
-	 */
-	public function sanitize( $data ){
-		$new_data = array();
-		if( isset( $data['address'] ) ){
-			$new_data['address'] = wp_kses_post( $data['address'] );
-		}
-		if( isset( $data['gmaps_address'] ) ){
-			$new_data['gmaps_address'] = strip_tags( $data['gmaps_address'] );
-		}
-		if( isset( $data['gmaps_api_key'] ) ){
-			$new_data['gmaps_api_key'] = strip_tags( $data['gmaps_api_key'] );
-		}
-		if( isset( $data['gmaps_lat'] ) ){
-			$new_data['gmaps_lat'] = strip_tags( $data['gmaps_lat'] );
-		}
-		if( isset( $data['gmaps_lat'] ) ){
-			$new_data['gmaps_lat'] = strip_tags( $data['gmaps_lat'] );
-		}
-		return $new_data;
 	}
 
 
