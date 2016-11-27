@@ -16,7 +16,7 @@ class Functions{
 	 * To get option easier when merging multiple option in single option name.
 	 * @since 1.0.0
 	 */
-	public static function get_option( $option, $default = '', $option_name = 'fx-base' ) {
+	public static function get_option( $option, $default = '', $option_name = 'fx-maps' ) {
 
 		/* Bail early if no option defined */
 		if ( !$option ){

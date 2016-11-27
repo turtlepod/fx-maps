@@ -114,36 +114,65 @@ class Settings{
 
 		/* Create settings section */
 		add_settings_section(
-			$section_id        = 'fx_base_section1',
+			$section_id        = 'fx_maps_section',
 			$section_title     = '',
 			$callback_function = '__return_false',
 			$settings_slug     = $this->settings_slug
 		);
 
-		/* Create Setting Field: Boxes, Buttons, Columns */
+		/* Create setting field: Address */
 		add_settings_field(
-			$field_id          = 'fx_base_settings_field1',
-			$field_title       = __( 'Field #1', 'fx-maps' ),
-			$callback_function = array( $this, 'settings_field1' ),
+			$field_id          = 'fx_maps_address',
+			$field_title       = '<label for="fx-maps-address">' . __( 'Location Address', 'fx-maps' ) . '</label>',
+			$callback_function = function(){
+				$address = Functions::get_option( 'address' );
+				?>
+					<textarea autocomplete="off" id="fx-maps-address" class="widefat" name="fx-maps[address]"><?php echo esc_textarea( $address ); ?></textarea>
+					<p class="description"><?php _e( 'Your location address.', 'fx-maps' ); ?></p>
+				<?php
+			},
 			$settings_slug     = $this->settings_slug,
-			$section_id        = 'fx_base_section1'
+			$section_id        = 'fx_maps_section'
 		);
 
-	}
+		/* Create setting field: Google Maps API */
+		add_settings_field(
+			$field_id          = 'fx_maps_api',
+			$field_title       = '<label for="fx-maps-gmaps-api-key">' . __( 'Google Maps API Key', 'fx-maps' ) . '</label>',
+			$callback_function = function(){
+				$api_key = Functions::get_option( 'gmaps_api_key' );
+				?>
+					<input autocomplete="off" id="fx-maps-gmaps-api-key" name="fx-maps[gmaps_api_key]" type="text" class="widefat" value="<?php echo sanitize_text_field( $api_key ); ?>">
+					<p class="description"><?php printf( __( 'Get your API key <a target="_blank" href="%s">here</a>.', 'fx-maps' ), '#' ); ?></p>
+				<?php
+			},
+			$settings_slug     = $this->settings_slug,
+			$section_id        = 'fx_maps_section'
+		);
 
-	/**
-	 * Settings Field Callback
-	 * @since 1.0.0
-	 */
-	public function settings_field1(){
-		?>
-		<p>
-			<input type="text" name="fx-base" value="<?php echo sanitize_text_field( get_option( $this->option_name ) ); ?>">
-		</p>
-		<p class="description">
-			<?php _e( 'Hi there!', 'fx-maps' ); ?>
-		</p>
-		<?php
+		/* Create setting field: Google Maps */
+		add_settings_field(
+			$field_id          = 'fx_maps_google_maps',
+			$field_title       = '<label for="fx-maps-gmaps_address">' . __( 'Google Maps Location', 'fx-maps' ) . '</label>',
+			$callback_function = function(){
+				$gmaps_address = Functions::get_option( 'gmaps_address' ); // search
+				$gmaps_lat     = Functions::get_option( 'gmaps_lat' );
+				$gmaps_lng     = Functions::get_option( 'gmaps_address' );
+				?>
+					<p>
+						<input autocomplete="off" placeholder="<?php echo sanitize_text_field( __( 'Search Google Maps...', 'fx-maps' ) ); ?>" id="fx-maps-gmaps_address" name="fx-maps[gmaps_address]" type="search" class="widefat" value="<?php echo sanitize_text_field( $gmaps_address ); ?>">
+						<a id="get-loc" title="<?php esc_attr_e( 'Get your current location', 'fx-maps' ); ?>" href="#"><span><?php _e( 'Get your current location', 'fx-maps' ); ?></span></a>
+					</p>
+					<p>{Maps Goes Here.}</p>
+					<input autocomplete="off" name="fx-maps[gmaps_lat]" type="text" value="<?php echo sanitize_text_field( $gmaps_lat ); ?>">
+					<input autocomplete="off" name="fx-maps[gmaps_lng]" type="text" value="<?php echo sanitize_text_field( $gmaps_lng ); ?>">
+					<p class="description"><?php _e( 'Search your location in Google Maps.', 'fx-maps' ); ?></p>
+				<?php
+			},
+			$settings_slug     = $this->settings_slug,
+			$section_id        = 'fx_maps_section'
+		);
+
 	}
 
 
@@ -152,7 +181,23 @@ class Settings{
 	 * @since 1.0.0
 	 */
 	public function sanitize( $data ){
-		return sanitize_text_field( $data );
+		$new_data = array();
+		if( isset( $data['address'] ) ){
+			$new_data['address'] = wp_kses_post( $data['address'] );
+		}
+		if( isset( $data['gmaps_address'] ) ){
+			$new_data['gmaps_address'] = strip_tags( $data['gmaps_address'] );
+		}
+		if( isset( $data['gmaps_api_key'] ) ){
+			$new_data['gmaps_api_key'] = strip_tags( $data['gmaps_api_key'] );
+		}
+		if( isset( $data['gmaps_lat'] ) ){
+			$new_data['gmaps_lat'] = strip_tags( $data['gmaps_lat'] );
+		}
+		if( isset( $data['gmaps_lat'] ) ){
+			$new_data['gmaps_lat'] = strip_tags( $data['gmaps_lat'] );
+		}
+		return $new_data;
 	}
 
 
@@ -216,6 +261,7 @@ class Settings{
 	 */
 	public function add_meta_boxes(){
 
+		/* PRO Upsell */
 		add_meta_box(
 			$id         = 'fx_maps_upsell',
 			$title      = __( 'f(x) Maps PRO', 'fx-maps' ),
@@ -227,6 +273,20 @@ class Settings{
 			$screen     = $this->hook_suffix,
 			$context    = 'side',
 			$priority   = 'high'
+		);
+
+		/* Shortcode */
+		add_meta_box(
+			$id         = 'fx_maps_shortcode',
+			$title      = __( 'Shortcode', 'fx-maps' ),
+			$callback   = function(){
+				?>
+				<p>Use this shortcode to display map and address.</p>
+				<?php
+			},
+			$screen     = $this->hook_suffix,
+			$context    = 'side',
+			$priority   = 'default'
 		);
 	}
 }
