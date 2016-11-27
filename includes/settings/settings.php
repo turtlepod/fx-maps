@@ -161,13 +161,9 @@ class Settings{
 				$gmaps_lat     = Functions::get_option( 'gmaps_lat' );
 				$gmaps_lng     = Functions::get_option( 'gmaps_address' );
 				?>
-					<p id="gmaps-search">
+					<div id="gmaps-search">
 						<input autocomplete="off" placeholder="<?php echo sanitize_text_field( __( 'Search Google Maps...', 'fx-maps' ) ); ?>" id="fx-maps-gmaps_address" name="fx-maps[gmaps_address]" type="search" class="widefat" value="<?php echo sanitize_text_field( $gmaps_address ); ?>">
-						<a id="get-loc" title="<?php esc_attr_e( 'Get your current location', 'fx-maps' ); ?>" href="#"><span><?php _e( 'Get your current location', 'fx-maps' ); ?></span></a>
-					</p>
-					<p>{Maps Goes Here.}</p>
-					<input autocomplete="off" name="fx-maps[gmaps_lat]" type="text" value="<?php echo sanitize_text_field( $gmaps_lat ); ?>">
-					<input autocomplete="off" name="fx-maps[gmaps_lng]" type="text" value="<?php echo sanitize_text_field( $gmaps_lng ); ?>">
+					</div>
 					<p class="description"><?php _e( 'Search your location in Google Maps.', 'fx-maps' ); ?></p>
 				<?php
 			},
@@ -220,11 +216,24 @@ class Settings{
 			wp_enqueue_script( 'wp-lists' );
 			wp_enqueue_script( 'postbox' );
 
+			/* Google Maps */
+			$url = add_query_arg( array(
+				'v'         => '3.exp',
+				'libraries' => 'places',
+			), '//maps.googleapis.com/maps/api/js' );
+			$key = strip_tags( Functions::get_option( 'gmaps_api_key' ) );
+			$url = $key ? add_query_arg( 'key', urlencode( $key ), $url ) : $url;
+			wp_register_script( 'google-maps', apply_filters( 'wpjmel_google_maps_url', $url ), array(), '3.exp', false );
+
+			/* f(x) GMaps */
+			wp_register_style( "fx-gmaps", $this->uri . 'assets/fx-gmaps/fx-gmaps.css', array(), '1.0.0' );
+			wp_enqueue_script( "fx-gmaps", $this->uri . 'assets/fx-gmaps/jquery.fx-gmaps.js', array( 'jquery', 'google-maps' ), '1.0.0', true );
+
 			/* CSS */
-			wp_enqueue_style( "{$this->settings_slug}_settings", $this->uri . 'assets/settings.css', array(), VERSION );
+			wp_enqueue_style( "{$this->settings_slug}_settings", $this->uri . 'assets/settings.css', array( 'fx-gmaps' ), VERSION );
 
 			/* JS */
-			wp_enqueue_script( "{$this->settings_slug}_settings", $this->uri . 'assets/settings.js', array( 'jquery' ), VERSION, true );
+			wp_enqueue_script( "{$this->settings_slug}_settings", $this->uri . 'assets/settings.js', array( 'jquery', 'fx-gmaps' ), VERSION, true );
 		}
 	}
 
