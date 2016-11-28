@@ -145,7 +145,7 @@ class Settings{
 				$api_key = Functions::get_option( 'gmaps_api_key' );
 				?>
 					<input autocomplete="off" id="fx-maps-gmaps-api-key" name="fx-maps[gmaps_api_key]" type="text" class="widefat" value="<?php echo sanitize_text_field( strip_tags( $api_key ) ); ?>">
-					<p class="description"><?php printf( __( "Get your API Key <a target='_blank' href='%s'>here</a>. And enable Google Maps Embed API, Google Maps JavaScript API, Google Maps Geocoding API, and Google Maps Geolocation API.", 'fx-maps' ), esc_url( 'https://developers.google.com/maps/documentation/javascript/get-api-key' ) ); ?></p>
+					<p class="description"><?php printf( __( "Get your API Key <a target='_blank' href='%s'>here</a>. And enable Google Maps Embed API, Google Maps JavaScript API, Google Maps Geocoding API, Google Maps Geolocation API, and Google Places API Web Service.", 'fx-maps' ), esc_url( 'https://developers.google.com/maps/documentation/javascript/get-api-key' ) ); ?></p>
 				<?php
 			},
 			$settings_slug     = $this->settings_slug,
@@ -226,7 +226,7 @@ class Settings{
 			wp_register_script( 'google-maps', $url, array(), '3.exp', false );
 
 			/* f(x) GMaps */
-			wp_register_style( "fx-gmaps", $this->uri . 'assets/fx-gmaps/fx-gmaps.css', array(), '1.0.0' );
+			wp_enqueue_style( "fx-gmaps", $this->uri . 'assets/fx-gmaps/fx-gmaps.css', array(), '1.0.0' );
 			wp_enqueue_script( "fx-gmaps", $this->uri . 'assets/fx-gmaps/jquery.fx-gmaps.js', array( 'jquery', 'google-maps' ), '1.0.0', true );
 
 			/* CSS */
