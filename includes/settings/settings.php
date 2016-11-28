@@ -144,8 +144,8 @@ class Settings{
 			$callback_function = function(){
 				$api_key = Functions::get_option( 'gmaps_api_key' );
 				?>
-					<input autocomplete="off" id="fx-maps-gmaps-api-key" name="fx-maps[gmaps_api_key]" type="text" class="widefat" value="<?php echo sanitize_text_field( $api_key ); ?>">
-					<p class="description"><?php printf( __( 'Get your API key <a target="_blank" href="%s">here</a>.', 'fx-maps' ), '#' ); ?></p>
+					<input autocomplete="off" id="fx-maps-gmaps-api-key" name="fx-maps[gmaps_api_key]" type="text" class="widefat" value="<?php echo sanitize_text_field( strip_tags( $api_key ) ); ?>">
+					<p class="description"><?php printf( __( "Get your API Key <a target='_blank' href='%s'>here</a>. And enable Google Maps Embed API, Google Maps JavaScript API, Google Maps Geocoding API, and Google Maps Geolocation API.", 'fx-maps' ), esc_url( 'https://developers.google.com/maps/documentation/javascript/get-api-key' ) ); ?></p>
 				<?php
 			},
 			$settings_slug     = $this->settings_slug,
@@ -158,11 +158,11 @@ class Settings{
 			$field_title       = '<label for="fx-maps-gmaps_address">' . __( 'Google Maps Location', 'fx-maps' ) . '</label>',
 			$callback_function = function(){
 				$gmaps_address = Functions::get_option( 'gmaps_address' ); // search
-				$gmaps_lat     = Functions::get_option( 'gmaps_lat' );
-				$gmaps_lng     = Functions::get_option( 'gmaps_address' );
+				$gmaps_lat     = Functions::get_option( 'gmaps_lat', '40.712784' ); // default to new york.
+				$gmaps_lng     = Functions::get_option( 'gmaps_lng', '-74.005941' ); // default to new york.
 				?>
 					<div id="gmaps-search">
-						<input autocomplete="off" placeholder="<?php echo sanitize_text_field( __( 'Search Google Maps...', 'fx-maps' ) ); ?>" id="fx-maps-gmaps_address" name="fx-maps[gmaps_address]" type="search" class="widefat" value="<?php echo sanitize_text_field( $gmaps_address ); ?>">
+						<input autocomplete="off" placeholder="<?php echo sanitize_text_field( __( 'Search Google Maps...', 'fx-maps' ) ); ?>" id="fx-maps-gmaps_address" name="fx-maps[gmaps_address]" type="search" class="widefat" data-lat="<?php echo esc_attr( strip_tags( $gmaps_lat ) ); ?>" data-lng="<?php echo esc_attr( strip_tags( $gmaps_lng ) ); ?>" value="<?php echo sanitize_text_field( strip_tags( $gmaps_address ) ); ?>">
 					</div>
 					<p class="description"><?php _e( 'Search your location in Google Maps.', 'fx-maps' ); ?></p>
 				<?php
@@ -178,7 +178,7 @@ class Settings{
 			$callback_function = function(){
 				$display_address = Functions::get_option( 'display_address' );
 				?>
-					<textarea autocomplete="off" id="fx-maps-address" class="widefat" name="fx-maps[display_address]"><?php echo esc_textarea( $display_address ); ?></textarea>
+					<textarea autocomplete="off" id="fx-maps-address" class="widefat" name="fx-maps[display_address]"><?php echo esc_textarea( wp_kses_post( $display_address ) ); ?></textarea>
 					<p class="description"><?php _e( 'Your location address.', 'fx-maps' ); ?></p>
 				<?php
 			},
@@ -223,14 +223,14 @@ class Settings{
 			), '//maps.googleapis.com/maps/api/js' );
 			$key = strip_tags( Functions::get_option( 'gmaps_api_key' ) );
 			$url = $key ? add_query_arg( 'key', urlencode( $key ), $url ) : $url;
-			wp_register_script( 'google-maps', apply_filters( 'wpjmel_google_maps_url', $url ), array(), '3.exp', false );
+			wp_register_script( 'google-maps', $url, array(), '3.exp', false );
 
 			/* f(x) GMaps */
 			wp_register_style( "fx-gmaps", $this->uri . 'assets/fx-gmaps/fx-gmaps.css', array(), '1.0.0' );
 			wp_enqueue_script( "fx-gmaps", $this->uri . 'assets/fx-gmaps/jquery.fx-gmaps.js', array( 'jquery', 'google-maps' ), '1.0.0', true );
 
 			/* CSS */
-			wp_enqueue_style( "{$this->settings_slug}_settings", $this->uri . 'assets/settings.css', array( 'fx-gmaps' ), VERSION );
+			//wp_enqueue_style( "{$this->settings_slug}_settings", $this->uri . 'assets/settings.css', array( 'fx-gmaps' ), VERSION );
 
 			/* JS */
 			wp_enqueue_script( "{$this->settings_slug}_settings", $this->uri . 'assets/settings.js', array( 'jquery', 'fx-gmaps' ), VERSION, true );
@@ -262,19 +262,18 @@ class Settings{
 	 */
 	public function add_meta_boxes(){
 
-		/* PRO Upsell */
+		/* PRO Upsell (?) Maybe Later */
+		/* 
 		add_meta_box(
 			$id         = 'fx_maps_upsell',
-			$title      = __( 'f(x) Maps PRO', 'fx-maps' ),
+			$title      = 'f(x) Maps PRO',
 			$callback   = function(){
-				?>
-				<p>Lorem Ipsum</p>
-				<?php
 			},
 			$screen     = $this->hook_suffix,
 			$context    = 'side',
 			$priority   = 'high'
 		);
+		*/
 
 		/* Shortcode */
 		add_meta_box(
@@ -282,7 +281,7 @@ class Settings{
 			$title      = __( 'Shortcode', 'fx-maps' ),
 			$callback   = function(){
 				?>
-				<p>Use this shortcode to display map and address.</p>
+				<p><?php _e( 'Use this shortcode to display map and address.', 'fx-maps' ); ?></p>
 				<p><input id="fx-maps-shortcode" class="widefat" type="text" readonly="readonly" value="[fx-maps]"></p>
 				<?php
 			},

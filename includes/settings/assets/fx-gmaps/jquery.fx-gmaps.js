@@ -1,6 +1,14 @@
 /**
- * Mapify: Add Map To Address Input
- */
+ * f(x) GMaps
+ * Simple JS to display Google Maps search below text input with geo tag feature to get current user location.
+ * You also need to load Google Maps JS as dependency for this script to work.
+ *
+ * @version 1.0.0
+ * @link http://genbumedia.com/plugins/fx-maps/
+ * @license: GPLv2 or later
+ * @author David Chandra Purnama <david@genbumedia.com>
+ * @copyright Copyright (c) 2016, Genbu Media
+**/
 ;( function ( $ ) {
 	$.fn.extend({
 
@@ -23,6 +31,9 @@
 
 				/* Prepare
 				------------------------------------------ */
+
+				/* Add Class */
+				that.addClass( 'fx-gmaps-input' );
 
 				/* Always add wrapper for consistency */
 				that.wrap( '<div class="fx-gmaps"><div class="fx-gmaps-wrap"></div></div>' );
