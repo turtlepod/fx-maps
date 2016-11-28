@@ -4,5 +4,5 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 /* Clean up stuff */
-//delete_option( 'fx-base' );
-//delete_option( 'fx-base_welcome' );
+delete_option( 'fx-maps' );
+delete_option( 'fx-maps_welcome' );

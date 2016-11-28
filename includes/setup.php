@@ -25,3 +25,6 @@ require_once( PATH . 'includes/functions.php' );
 /* Settings */
 require_once( PATH . 'includes/settings/settings.php' );
 
+/* Front End */
+require_once( PATH . 'includes/front-end/front-end.php' );
+

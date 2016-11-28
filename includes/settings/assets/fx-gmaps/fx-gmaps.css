@@ -1,0 +1,49 @@
+.fx-gmaps{
+	padding: 5px;
+	border: 1px solid #ddd;
+	background: #fff;
+	position: relative;
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+}
+/* Input */
+.fx-gmaps-input{
+	padding-right: 28px;
+	background-image: 
+}
+/* API Key Error */
+.fx-gmaps-input.gm-err-autocomplete{
+	background-repeat: no-repeat;
+	background-size: 25px;
+	background-position: center left;
+	padding-left: 30px;
+}
+/* Map Canvas */
+.map-canvas{
+	margin-top: 5px;
+}
+/* My Location */
+.mylocation{
+	position: absolute;
+	top: 9px;
+	right: 7px;
+	background: url( 'mylocation.png' );
+	background-size: 100%;
+	background-position: center;
+	width: 20px;
+	height: 20px;
+	display: block;
+	opacity: 0.8;
+	cursor: pointer;
+}
+.mylocation:hover,
+.mylocation:active{
+	opacity: 1;
+}
+@media screen and (max-width: 768px){
+	.mylocation{
+		width: 28px;
+		height: 28px;
+	}
+}
